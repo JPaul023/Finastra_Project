@@ -1,0 +1,47 @@
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+
+/* Ensure modal is visible and clickable */
+.modal {
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 1050;
+}
+
+/* Ensure modal content is not blocked */
+.modal-dialog {
+  max-width: 500px;
+  background: white;
+  border-radius: 8px;
+  padding: 20px;
+  z-index: 1051;
+}
+
+/* Fix modal backdrop blocking input */
+.modal-backdrop {
+  display: none !important;
+  pointer-events: none !important;
+}
+
+/* Prevent scrolling when modal is open */
+.modal-open {
+  overflow: hidden;
+}
