@@ -26,13 +26,31 @@ const Modal = ({ showModal, title, fields, data, onClose, onChange, onSave }) =>
               {fields.map((field, index) => (
                 <div className="mb-3" key={index}>
                   <label className="form-label">{field.label}</label>
-                  <input
-                    type={field.type}
-                    className="form-control"
-                    name={field.name}
-                    value={data[field.name] || ""}
-                    onChange={onChange}
-                  />
+                  
+                  {/* Check if the field is a select dropdown */}
+                  {field.type === "select" ? (
+                    <select
+                      className="form-control"
+                      name={field.name}
+                      value={data[field.name] || ""}
+                      onChange={onChange}
+                    >
+                      <option value="">Select {field.label}</option>
+                      {field.options.map((option) => (
+                        <option key={option.value} value={option.value}>
+                          {option.label}
+                        </option>
+                      ))}
+                    </select>
+                  ) : (
+                    <input
+                      type={field.type}
+                      className="form-control"
+                      name={field.name}
+                      value={data[field.name] || ""}
+                      onChange={onChange}
+                    />
+                  )}
                 </div>
               ))}
             </div>

@@ -15,10 +15,8 @@ import Orders from './pages/Logistics/Orders';
 import Warehouses from './pages/Logistics/Warehouses';
 
 import Inventory from './pages/inventory/Inventory';
-import CategoryList from './components/inventory/CategoryList';
-import CategoryForm from './components/inventory/CategoryForm';
-import ItemList from './components/inventory/ItemList';
-import ItemForm from './components/inventory/ItemForm';
+import CategoryList from './pages/inventory/CategoryList';
+import ItemList from './pages/inventory/ItemList';
 
 // Import HR Pages
 import HREmployees from './pages/hr/HREmployees';  // ✅ Fixed naming
@@ -44,12 +42,7 @@ function App() {
 
               <Route path="/inventory" element={<Inventory />} />
               <Route path="/inventory/categories" element={<CategoryList />} />
-              <Route path="/inventory/categories/new" element={<CategoryForm />} />
-              <Route path="/inventory/categories/edit/:id" element={<CategoryForm />} />
               <Route path="/inventory/items" element={<ItemList />} />
-              <Route path="/inventory/inventoryitems/new" element={<ItemForm />} />
-              <Route path="/inventory/items/edit/:id" element={<ItemForm />} />
-
 
               <Route path="/hr/employees" element={<HREmployees />} />
               <Route path="/hr/payroll" element={<Payroll />} />

@@ -1,28 +1,23 @@
 import axios from 'axios';
 
-const API_URL = 'http://localhost:8000/inventory/api';
+const API_BASE_URL = 'http://localhost:8000/inventory/api';
 
-const apiClient = axios.create({
-  baseURL: API_URL,
-  headers: {
-    'Content-Type': 'application/json',
-  },
-});
-
-export const categoryService = {
-  getAll: () => apiClient.get('/categories/'),
-  get: (id) => apiClient.get(`/categories/${id}/`),
-  create: (data) => apiClient.post('/categories/', data),
-  update: (id, data) => apiClient.put(`/categories/${id}/`, data),
-  delete: (id) => apiClient.delete(`/categories/${id}/`),
-  getItems: (id) => apiClient.get(`/categories/${id}/items/`),
+const api = {
+  // Categories
+  getCategories: () => axios.get(`${API_BASE_URL}/categories/`),
+  getCategory: (id) => axios.get(`${API_BASE_URL}/categories/${id}/`),
+  createCategory: (data) => axios.post(`${API_BASE_URL}/categories/`, data),
+  updateCategory: (id, data) => axios.put(`${API_BASE_URL}/categories/${id}/`, data),
+  deleteCategory: (id) => axios.delete(`${API_BASE_URL}/categories/${id}/`),
+  getCategoryItems: (id) => axios.get(`${API_BASE_URL}/categories/${id}/items/`),
+  
+  // Items
+  getItems: () => axios.get(`${API_BASE_URL}/items/`),
+  getItem: (id) => axios.get(`${API_BASE_URL}/items/${id}/`),
+  getItemsByCategory: (categoryId) => axios.get(`${API_BASE_URL}/items/?category=${categoryId}`),
+  createItem: (data) => axios.post(`${API_BASE_URL}/items/`, data),
+  updateItem: (id, data) => axios.put(`${API_BASE_URL}/items/${id}/`, data),
+  deleteItem: (id) => axios.delete(`${API_BASE_URL}/items/${id}/`),
 };
 
-export const itemService = {
-  getAll: () => apiClient.get('/items/'),
-  getAllByCategory: (categoryId) => apiClient.get(`/items/?category=${categoryId}`),
-  get: (id) => apiClient.get(`/items/${id}/`),
-  create: (data) => apiClient.post('/items/', data),
-  update: (id, data) => apiClient.put(`/items/${id}/`, data),
-  delete: (id) => apiClient.delete(`/items/${id}/`),
-};
+export default api;
