@@ -10,13 +10,15 @@ import { ThemeProvider } from "react-bootstrap";
 
 
 // Import pages from the new directory
-import Dashboard from './pages/Logistics/Dashboard';
+import Logistics from './pages/Logistics/Logistics';
 import Orders from './pages/Logistics/Orders';
+import Warehouses from './pages/Logistics/Warehouses';
 
-// import Shipments from './pages/Logistics/Shipments';
-// import Warehouses from './pages/Logistics/Warehouses';
-// import Vehicles from './pages/Logistics/Vehicles';
-// import Deliveries from './pages/Logistics/Deliveries';
+import Inventory from './pages/inventory/Inventory';
+import CategoryList from './components/inventory/CategoryList';
+import CategoryForm from './components/inventory/CategoryForm';
+import ItemList from './components/inventory/ItemList';
+import ItemForm from './components/inventory/ItemForm';
 
 // Import HR Pages
 import HREmployees from './pages/hr/HREmployees';  // ✅ Fixed naming
@@ -36,8 +38,19 @@ function App() {
           <div className="bg-light text-dark p-5 w-100">
             <Routes>
               <Route path="/" element={<Maindashboard />} />
-              <Route path="/logistics/" element={<Dashboard />} />
+              <Route path="/logistics/" element={<Logistics />} />
               <Route path="/logistics/orders" element={<Orders />} />
+              <Route path="/logistics/warehouses" element={<Warehouses />} />
+
+              <Route path="/inventory" element={<Inventory />} />
+              <Route path="/inventory/categories" element={<CategoryList />} />
+              <Route path="/inventory/categories/new" element={<CategoryForm />} />
+              <Route path="/inventory/categories/edit/:id" element={<CategoryForm />} />
+              <Route path="/inventory/items" element={<ItemList />} />
+              <Route path="/inventory/inventoryitems/new" element={<ItemForm />} />
+              <Route path="/inventory/items/edit/:id" element={<ItemForm />} />
+
+
               <Route path="/hr/employees" element={<HREmployees />} />
               <Route path="/hr/payroll" element={<Payroll />} />
               <Route path="/hr/attendance" element={<Attendance />} />

@@ -42,8 +42,8 @@ function Sidebar() {
             label: 'Inventory',
             bsColor: 'info',
             subItems: [
-                { path: '/inventory/one', label: 'Lorem ipsum', icon: '' },
-                { path: '/inventory/two', label: 'Lorem ipsum', icon: '' }
+                { path: '/inventory/categories', label: 'Categories', icon: '' },
+                { path: '/inventory/items', label: 'Items', icon: '' }
             ]
         },
         {

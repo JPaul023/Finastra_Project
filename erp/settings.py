@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'corsheaders',
     'hr_app',
+    'inventory_app',
 ]
 
 MIDDLEWARE = [
@@ -89,7 +90,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'erp_db',  # Replace with your database name
         'USER': 'root',      # Replace with your MySQL username
-        'PASSWORD': 'Watergreen!23',  # Replace with your MySQL password
+        'PASSWORD': '',  # Replace with your MySQL password
         'HOST': 'localhost',
         'PORT': '3306',
         'OPTIONS': {
