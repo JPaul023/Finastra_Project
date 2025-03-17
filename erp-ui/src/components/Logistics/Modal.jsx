@@ -1,6 +1,15 @@
 import React, { useEffect } from "react";
 
-const Modal = ({ showModal, title, fields, data, onClose, onChange, onSave }) => {
+const Modal = ({
+  showModal,
+  title,
+  fields,
+  data,
+  onClose,
+  onChange,
+  onSave,
+  actionButton, // 👈 Accepts a custom button
+}) => {
   useEffect(() => {
     if (showModal) {
       document.body.classList.add("modal-open");
@@ -26,8 +35,7 @@ const Modal = ({ showModal, title, fields, data, onClose, onChange, onSave }) =>
               {fields.map((field, index) => (
                 <div className="mb-3" key={index}>
                   <label className="form-label">{field.label}</label>
-                  
-                  {/* Check if the field is a select dropdown */}
+
                   {field.type === "select" ? (
                     <select
                       className="form-control"
@@ -49,6 +57,7 @@ const Modal = ({ showModal, title, fields, data, onClose, onChange, onSave }) =>
                       name={field.name}
                       value={data[field.name] || ""}
                       onChange={onChange}
+                      disabled={field.disabled || false}
                     />
                   )}
                 </div>
@@ -58,6 +67,7 @@ const Modal = ({ showModal, title, fields, data, onClose, onChange, onSave }) =>
               <button type="button" className="btn btn-secondary" onClick={onClose}>
                 Cancel
               </button>
+              {actionButton} {/* 👈 Insert the passed custom button here */}
               <button type="button" className="btn btn-primary" onClick={onSave}>
                 Save
               </button>
@@ -65,8 +75,6 @@ const Modal = ({ showModal, title, fields, data, onClose, onChange, onSave }) =>
           </div>
         </div>
       </div>
-
-      {/* Fix to prevent the backdrop from blocking clicks */}
       <div className="modal-backdrop fade show"></div>
     </>
   );

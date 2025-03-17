@@ -55,8 +55,8 @@ function ItemList() {
     try {
       const response = await api.getCategories();
       const categoryOptions = response.data.map((category) => ({
-        value: category.id, // Assuming your API returns an ID
-        label: category.name, // Assuming your API returns a name
+        value: category.id,
+        label: category.name,
       }));
       setCategories(categoryOptions);
     } catch {
@@ -120,10 +120,10 @@ function ItemList() {
     { name: "description", label: "Description", type: "text" },
     { name: "stock_quantity", label: "Quantity", type: "number" },
     {
-      name: "category_name",
+      name: "category",
       label: "Category",
       type: "select",
-      options: categories, // Now dynamically fetched from the database
+      options: categories, 
     },
   ];
 

@@ -5,7 +5,12 @@ import api from '../../services/logisticsAPI';
 
 function Logistics() {
   return(
-    <h1>Logistics</h1>
+    <div className="container-fluid py-4">
+      <h3 className="text-left mb-4">Logistics</h3>
+
+      
+
+    </div>
   );
 }
 

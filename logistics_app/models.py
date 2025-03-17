@@ -1,5 +1,8 @@
 from django.db import models
+import uuid
 from django.utils.crypto import get_random_string
+from decimal import Decimal
+from django.utils.timezone import now
 
 class Warehouse(models.Model):
     name = models.CharField(max_length=255)
@@ -20,6 +23,10 @@ class Vehicle(models.Model):
 class Order(models.Model):
     customer_name = models.CharField(max_length=255)
     warehouse = models.ForeignKey('Warehouse', related_name='orders', on_delete=models.CASCADE, null=True, blank=True)
+    vehicle = models.ForeignKey('Vehicle', related_name='orders', on_delete=models.CASCADE, null=True, blank=True)
+    category = models.ForeignKey('inventory_app.Category', related_name='orders', on_delete=models.CASCADE, null=True, blank=True)
+    item = models.ForeignKey('inventory_app.Item', related_name='orders', on_delete=models.CASCADE, null=True, blank=True)
+    quantity = models.PositiveIntegerField(default=1)
     order_date = models.DateTimeField(auto_now_add=True)
     status = models.CharField(max_length=20, choices=[
         ('pending', 'Pending'),
@@ -27,12 +34,12 @@ class Order(models.Model):
         ('delivered', 'Delivered'),
         ('canceled', 'Canceled'),
     ])
-    order_number = models.CharField(max_length=20, unique=True, blank=True, default=None, null=True)  # New field
+    order_number = models.CharField(max_length=20, unique=True, blank=True, default=None, null=True)
     delivery_address = models.TextField()
     total_amount = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
 
     def save(self, *args, **kwargs):
-        if not self.order_number:  # Generate order number only if it doesn't exist
+        if not self.order_number:
             self.order_number = self.generate_order_number()
         super().save(*args, **kwargs)
 
@@ -49,16 +56,26 @@ class Order(models.Model):
     def __str__(self):
         return f"{self.customer_name} - {self.order_number}"
 
+
 class Shipment(models.Model):
-    order = models.ForeignKey(Order, related_name='shipments', on_delete=models.CASCADE)
-    vehicle = models.ForeignKey(Vehicle, related_name='shipments', on_delete=models.CASCADE, null=True, blank=True)
-    tracking_number = models.CharField(max_length=100, unique=True)
-    shipped_date = models.DateTimeField(null=True)
-    delivered_date = models.DateTimeField(null=True)
+    order = models.ForeignKey('Order', related_name='shipments', on_delete=models.CASCADE)
+    vehicle = models.ForeignKey('Vehicle', related_name='shipments', on_delete=models.CASCADE, null=True, blank=True)
+    tracking_number = models.CharField(max_length=100, unique=True, editable=False, default=None)
+    shipped_date = models.DateTimeField(null=True, blank=True)
+    delivered_date = models.DateTimeField(null=True, blank=True)
+
+    def save(self, *args, **kwargs):
+        if not self.tracking_number:
+            self.tracking_number = str(uuid.uuid4().hex[:12]).upper()  # Generate a 12-character unique ID
+
+        # Set shipped_date if it's not already set
+        if not self.shipped_date:
+            self.shipped_date = now()
+
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return self.tracking_number
-
 
 class ProofOfDelivery(models.Model):
     shipment = models.OneToOneField(Shipment, related_name='proof', on_delete=models.CASCADE)

@@ -9,6 +9,8 @@ const api = {
   createOrder: (data) => axios.post(`${API_BASE_URL}/orders/`, data),
   updateOrder: (id, data) => axios.put(`${API_BASE_URL}/orders/${id}/`, data),
   deleteOrder: (id) => axios.delete(`${API_BASE_URL}/orders/${id}/`),
+
+  shipOrder: (data) => axios.post(`${API_BASE_URL}/shipments/ship_order/`, data),
   
   // Shipments
   getShipments: () => axios.get(`${API_BASE_URL}/shipments/`),

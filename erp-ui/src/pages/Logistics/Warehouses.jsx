@@ -99,9 +99,9 @@ function Warehouses() {
 
   return (
     <div className="container-fluid py-4">
-      <button className="btn btn-primary" onClick={openCreateModal}>
+      {/* <button className="btn btn-primary" onClick={openCreateModal}>
         <i className="bi bi-plus-circle me-1"></i> New Warehouse
-      </button>
+      </button> */}
       {loading ? <div>Loading...</div> : <Table data={warehouses} columns={columns} onEdit={openEditModal} onDelete={handleDeleteWarehouse} />}
       <Modal showModal={showModal} title="Manage Warehouses" fields={fields} data={currentWarehouse} onClose={() => setShowModal(false)} onChange={handleInputChange} onSave={handleSaveWarehouses} />
     </div>
