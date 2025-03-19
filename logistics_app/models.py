@@ -3,6 +3,7 @@ import uuid
 from django.utils.crypto import get_random_string
 from decimal import Decimal
 from django.utils.timezone import now
+from django.core.exceptions import ValidationError
 
 class Warehouse(models.Model):
     name = models.CharField(max_length=255)
@@ -78,10 +79,33 @@ class Shipment(models.Model):
         return self.tracking_number
 
 class ProofOfDelivery(models.Model):
+    DELIVERY_STATUS_CHOICES = [
+        ('delivered', 'Delivered'),
+        ('failed', 'Failed Delivery'),
+    ]
+
+    PAYMENT_MODE_CHOICES = [
+        ('cash', 'Cash'),
+        ('card', 'Credit/Debit Card'),
+        ('online', 'Online Payment'),
+        ('cod', 'Cash on Delivery'),
+        ('other', 'Other'),
+    ]
+
     shipment = models.OneToOneField(Shipment, related_name='proof', on_delete=models.CASCADE)
     delivered_by = models.CharField(max_length=255)
     delivered_date = models.DateTimeField(auto_now_add=True)
     signature = models.ImageField(upload_to='signatures/')
+    delivery_status = models.CharField(max_length=10, choices=DELIVERY_STATUS_CHOICES, default='delivered')
+    proof_photo = models.ImageField(upload_to='proof_photos/', blank=True, null=True)
+    amount_paid = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
+    payment_mode = models.CharField(max_length=10, choices=PAYMENT_MODE_CHOICES, blank=True, null=True)
+    failed_reason = models.TextField(blank=True, null=True)
+
+    def clean(self):
+        """Ensure 'failed_reason' is required if delivery was unsuccessful."""
+        if self.delivery_status == 'failed' and not self.failed_reason:
+            raise ValidationError({'failed_reason': 'Reason for failed delivery is required.'})
 
     def __str__(self):
         return f"Proof of Delivery for {self.shipment.tracking_number}"

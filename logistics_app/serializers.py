@@ -20,6 +20,7 @@ class OrderSerializer(serializers.ModelSerializer):
 
 
 class ShipmentSerializer(serializers.ModelSerializer):
+    order = OrderSerializer(read_only=True)
     class Meta:
         model = Shipment
         fields = '__all__'

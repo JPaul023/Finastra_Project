@@ -20,7 +20,7 @@ class OrderViewSet(viewsets.ModelViewSet):
 
 
 class ShipmentViewSet(viewsets.ModelViewSet):
-    queryset = Shipment.objects.all()
+    queryset = Shipment.objects.select_related('order')
     serializer_class = ShipmentSerializer
 
     @action(detail=False, methods=["post"])
