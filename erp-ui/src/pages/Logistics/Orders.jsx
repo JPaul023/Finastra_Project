@@ -70,7 +70,6 @@ function Orders() {
     }
   }, [currentOrder.category]);
 
-  // Add this effect to calculate total_amount whenever price or quantity changes
   useEffect(() => {
     // Convert values to numbers and calculate total
     const price = parseFloat(currentOrder.price) || 0;
@@ -197,7 +196,6 @@ function Orders() {
     try {
       const orderData = {
         ...currentOrder,
-        // Make sure to include these fields
         category: currentOrder.category,
         item: currentOrder.item,
       };
@@ -312,17 +310,32 @@ function Orders() {
     if (!confirmShip) return;
 
     try {
+      const itemResponse = await inventoryAPi.getItem(currentOrder.item);
+      const item = itemResponse.data;
+
+      if (item.stock_quantity < currentOrder.quantity) {
+        setError(`Not enough stock for ${item.name}`);
+        return;
+      }
+
+      const updatedStock = item.stock_quantity - currentOrder.quantity;
+
+      await inventoryAPi.updateItem(item.id, { stock_quantity: updatedStock });
+
       const shipmentData = {
         order: currentOrder.id,
         vehicle: currentOrder.vehicle || null,
       };
-
-      await api.shipOrder(shipmentData); // Calls the new API endpoint
+      await api.shipOrder(shipmentData);
 
       setSuccess("Order shipped successfully");
       setShowModal(false);
-      loadOrders(); // Reloads the order list
+      loadOrders(); // Reload order list
     } catch (error) {
+      console.error(
+        "Error shipping order:",
+        error.response ? error.response.data : error
+      );
       setError("Failed to ship order");
     }
   };

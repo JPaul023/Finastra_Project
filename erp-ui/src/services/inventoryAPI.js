@@ -18,6 +18,9 @@ const api = {
   createItem: (data) => axios.post(`${API_BASE_URL}/items/`, data),
   updateItem: (id, data) => axios.put(`${API_BASE_URL}/items/${id}/`, data),
   deleteItem: (id) => axios.delete(`${API_BASE_URL}/items/${id}/`),
+
+  updateItem: (id, data) => axios.patch(`${API_BASE_URL}/items/${id}/`, data),
+
 };
 
 export default api;

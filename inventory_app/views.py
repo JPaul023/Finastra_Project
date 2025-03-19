@@ -21,11 +21,12 @@ class CategoryViewSet(viewsets.ModelViewSet):
 class ItemViewSet(viewsets.ModelViewSet):
     queryset = Item.objects.all()
     serializer_class = ItemSerializer
-    
-    def get_queryset(self):
-        """Allow filtering by category"""
-        queryset = Item.objects.all()
-        category_id = self.request.query_params.get('category', None)
-        if category_id:
-            queryset = queryset.filter(category__id=category_id)
-        return queryset
+
+    def update(self, request, *args, **kwargs):
+        partial = kwargs.pop('partial', True) 
+        instance = self.get_object()
+        serializer = self.get_serializer(instance, data=request.data, partial=partial)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
