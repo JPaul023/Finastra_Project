@@ -25,6 +25,7 @@ import Attendance from './pages/hr/Attendance'; // Import Attendance Page
 import Recruitment from './pages/hr/Recruitment';
 import Performance from './pages/hr/Performance';
 import HRPayroll from "./pages/hr/HRPayroll"; 
+import Leave from "./pages/hr/leave";
 
 
 function App() {
@@ -44,6 +45,7 @@ function App() {
               <Route path="/hr/recruitment" element={<Recruitment />} />
               <Route path="/hr/performance" element={<Performance />} />
               <Route path="/hr/hrpayroll" element={<HRPayroll />} />
+              <Route path="/leave" element={<Leave />} />
             </Routes>
           </div>
         </div>

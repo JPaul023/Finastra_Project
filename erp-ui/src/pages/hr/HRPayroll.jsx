@@ -1,7 +1,8 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import hrAPI from "../../services/hrapi";
 import jsPDF from "jspdf";
 import "jspdf-autotable";
+import "./animations.css"; // Ensure correct import
 
 const HRPayroll = () => {
   const [payrolls, setPayrolls] = useState([]);
@@ -12,21 +13,11 @@ const HRPayroll = () => {
     deductions: "",
     bonuses: "",
   });
-  const [editingPayroll, setEditingPayroll] = useState(null); // ✅ Track if editing
+  const [editingPayroll, setEditingPayroll] = useState(null);
 
   useEffect(() => {
-    fetchPayrolls();
     fetchEmployees();
   }, []);
-
-  const fetchPayrolls = async () => {
-    try {
-      const response = await hrAPI.getPayrolls();
-      setPayrolls(response.data);
-    } catch (error) {
-      console.error("Error fetching payrolls:", error);
-    }
-  };
 
   const fetchEmployees = async () => {
     try {
@@ -37,31 +28,61 @@ const HRPayroll = () => {
     }
   };
 
+  const fetchPayrolls = useCallback(async () => {
+    try {
+      const response = await hrAPI.getPayrolls();
+      const payrollData = response.data;
+
+      const updatedPayrolls = employees.map((emp) => {
+        const existingPayroll = payrollData.find((p) => p.employee === emp.id);
+        return existingPayroll || {
+          id: null,
+          employee: emp.id,
+          employee_name: `${emp.first_name} ${emp.last_name}`,
+          basic_salary: 0,
+          deductions: 0,
+          bonuses: 0,
+          net_salary: 0,
+        };
+      });
+
+      setPayrolls(updatedPayrolls);
+    } catch (error) {
+      console.error("Error fetching payrolls:", error);
+    }
+  }, [employees]);
+
+  useEffect(() => {
+    if (employees.length > 0) {
+      fetchPayrolls();
+    }
+  }, [employees, fetchPayrolls]);
+
   const handleInputChange = (e) => {
     setNewPayroll({ ...newPayroll, [e.target.name]: e.target.value });
   };
 
-  // ✅ Save or Update Payroll
   const savePayroll = async () => {
     try {
-      if (editingPayroll) {
-        await hrAPI.updatePayroll(editingPayroll.id, newPayroll); // ✅ Update existing record
+      if (editingPayroll && editingPayroll.id) {
+        await hrAPI.updatePayroll(editingPayroll.id, newPayroll);
       } else {
-        await hrAPI.createPayroll(newPayroll); // ✅ Create new record
+        await hrAPI.createPayroll(newPayroll);
       }
 
       fetchPayrolls();
       setNewPayroll({ employee: "", basic_salary: "", deductions: "", bonuses: "" });
-      setEditingPayroll(null); // ✅ Reset editing mode
+      setEditingPayroll(null);
       alert("Payroll saved successfully!");
     } catch (error) {
       console.error("Error saving payroll:", error);
     }
   };
 
-  // ✅ Set payroll data for editing (Fix: Pre-select Employee)
   const editPayroll = (payroll) => {
-    const matchedEmployee = employees.find((emp) => emp.first_name + " " + emp.last_name === payroll.employee_name);
+    const matchedEmployee = employees.find(
+      (emp) => emp.first_name + " " + emp.last_name === payroll.employee_name
+    );
 
     setNewPayroll({
       employee: matchedEmployee ? matchedEmployee.id : "",
@@ -69,10 +90,9 @@ const HRPayroll = () => {
       deductions: payroll.deductions,
       bonuses: payroll.bonuses,
     });
-    setEditingPayroll(payroll); // ✅ Set editing mode
+    setEditingPayroll(payroll);
   };
 
-  // ✅ Delete payroll record
   const deletePayroll = async (id) => {
     if (window.confirm("Are you sure you want to delete this payroll record?")) {
       try {
@@ -85,7 +105,6 @@ const HRPayroll = () => {
     }
   };
 
-  // ✅ Print payroll slip
   const printPayroll = (payroll) => {
     const doc = new jsPDF();
     doc.setFont("helvetica", "bold");
@@ -103,10 +122,10 @@ const HRPayroll = () => {
   };
 
   return (
-    <div className="container-fluid py-4">
-      <h1 className="mb-4">Payroll Processing & Salary Slips</h1>
+    <div className="container-fluid py-4 fade-in-slide"> {/* Applying fade-in-slide animation */}
+      <h1 className="mb-4 slide-in-left">Payroll Processing & Salary Slips</h1>
 
-      <table className="table table-bordered">
+      <table className="table table-bordered slide-in-row"> {/* Applying slide-in-row animation */}
         <thead>
           <tr>
             <th>Employee</th>
@@ -119,16 +138,24 @@ const HRPayroll = () => {
         </thead>
         <tbody>
           {payrolls.map((payroll) => (
-            <tr key={payroll.id}>
+            <tr key={payroll.employee} className="slide-in-row">
               <td>{payroll.employee_name}</td>
               <td>${payroll.basic_salary}</td>
               <td>${payroll.deductions}</td>
               <td>${payroll.bonuses}</td>
               <td>${payroll.net_salary}</td>
               <td>
-                <button className="btn btn-sm btn-primary mx-1" onClick={() => editPayroll(payroll)}>Edit</button>
-                <button className="btn btn-sm btn-danger mx-1" onClick={() => deletePayroll(payroll.id)}>Delete</button>
-                <button className="btn btn-sm btn-success mx-1" onClick={() => printPayroll(payroll)}>Print</button>
+                <button className="btn btn-sm btn-primary mx-1" onClick={() => editPayroll(payroll)}>
+                  Edit
+                </button>
+                {payroll.id && (
+                  <button className="btn btn-sm btn-danger mx-1" onClick={() => deletePayroll(payroll.id)}>
+                    Delete
+                  </button>
+                )}
+                <button className="btn btn-sm btn-success mx-1" onClick={() => printPayroll(payroll)}>
+                  Print
+                </button>
               </td>
             </tr>
           ))}
@@ -136,7 +163,7 @@ const HRPayroll = () => {
       </table>
 
       <h3>{editingPayroll ? "Edit Payroll" : "Add Payroll"}</h3>
-      <div className="payroll-form p-4 border rounded bg-white">
+      <div className="payroll-form p-4 border rounded bg-white scale-in"> {/* Applying scale-in animation */}
         <div className="d-flex gap-3 mb-3">
           <select className="form-control" name="employee" value={newPayroll.employee} onChange={handleInputChange}>
             <option value="">Select Employee</option>
@@ -146,11 +173,32 @@ const HRPayroll = () => {
               </option>
             ))}
           </select>
-          <input className="form-control" type="number" name="basic_salary" placeholder="Basic Salary" value={newPayroll.basic_salary} onChange={handleInputChange} />
-          <input className="form-control" type="number" name="deductions" placeholder="Deductions" value={newPayroll.deductions} onChange={handleInputChange} />
-          <input className="form-control" type="number" name="bonuses" placeholder="Bonuses" value={newPayroll.bonuses} onChange={handleInputChange} />
+          <input
+            className="form-control"
+            type="number"
+            name="basic_salary"
+            placeholder="Basic Salary"
+            value={newPayroll.basic_salary}
+            onChange={handleInputChange}
+          />
+          <input
+            className="form-control"
+            type="number"
+            name="deductions"
+            placeholder="Deductions"
+            value={newPayroll.deductions}
+            onChange={handleInputChange}
+          />
+          <input
+            className="form-control"
+            type="number"
+            name="bonuses"
+            placeholder="Bonuses"
+            value={newPayroll.bonuses}
+            onChange={handleInputChange}
+          />
         </div>
-        <button className="btn btn-primary w-100 py-2" onClick={savePayroll}>
+        <button className="btn btn-primary w-100 py-2 scale-in" onClick={savePayroll}>
           {editingPayroll ? "Update Payroll" : "Save Payroll"}
         </button>
       </div>

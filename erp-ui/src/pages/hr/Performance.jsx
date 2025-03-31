@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import hrAPI from "../../services/hrapi";
 import { Container, Table, Button, Spinner } from "react-bootstrap";
+import "./animations.css"; // Corrected the import path
 
 const Performance = () => {
     const [unevaluated, setUnevaluated] = useState([]);
@@ -61,18 +62,18 @@ const Performance = () => {
 
     return (
         <Container className="mt-4">
-            <h2 className="text-center mb-4">Performance Evaluation</h2>
+            <h2 className="text-center mb-4 fade-in">Performance Evaluation</h2>
 
             {loading ? (
-                <div className="text-center">
+                <div className="text-center spinner-container">
                     <Spinner animation="border" role="status">
                         <span className="visually-hidden">Loading...</span>
                     </Spinner>
                 </div>
             ) : (
                 <>
-                    <h4 className="mt-3">Unevaluated Employees</h4>
-                    <Table striped bordered hover responsive>
+                    <h4 className="mt-3 fade-in">Unevaluated Employees</h4>
+                    <Table striped bordered hover responsive className="fade-in-table">
                         <thead className="table-dark">
                             <tr>
                                 <th>Name</th>
@@ -83,11 +84,12 @@ const Performance = () => {
                         <tbody>
                             {unevaluated.length > 0 ? (
                                 unevaluated.map((emp) => (
-                                    <tr key={emp.id}>
+                                    <tr key={emp.id} className="row-appear">
                                         <td>{emp.first_name} {emp.last_name}</td>
                                         <td>{emp.position}</td>
                                         <td>
-                                            <Button variant="primary" size="sm" onClick={() => handleEvaluate(emp.id)}>
+                                            <Button variant="primary" size="sm" className="btn-animate"
+                                                onClick={() => handleEvaluate(emp.id)}>
                                                 Evaluate
                                             </Button>
                                         </td>
@@ -101,8 +103,8 @@ const Performance = () => {
                         </tbody>
                     </Table>
 
-                    <h4 className="mt-4">Evaluated Employees</h4>
-                    <Table striped bordered hover responsive>
+                    <h4 className="mt-4 fade-in">Evaluated Employees</h4>
+                    <Table striped bordered hover responsive className="fade-in-table">
                         <thead className="table-success">
                             <tr>
                                 <th>Name</th>
@@ -114,16 +116,16 @@ const Performance = () => {
                         <tbody>
                             {evaluated.length > 0 ? (
                                 evaluated.map((emp) => (
-                                    <tr key={emp.id}>
+                                    <tr key={emp.id} className="row-appear">
                                         <td>{emp.first_name} {emp.last_name}</td>
                                         <td>{emp.position}</td>
                                         <td>{emp.performance_score}</td>
                                         <td>
-                                            <Button variant="warning" size="sm" className="me-2"
+                                            <Button variant="warning" size="sm" className="me-2 btn-animate"
                                                 onClick={() => handleEdit(emp.id, emp.performance_score)}>
                                                 Edit
                                             </Button>
-                                            <Button variant="danger" size="sm"
+                                            <Button variant="danger" size="sm" className="btn-animate"
                                                 onClick={() => handleDelete(emp.id)}>
                                                 Reset
                                             </Button>
