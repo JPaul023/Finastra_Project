@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import hrAPI from "../../services/hrapi";
+import "./animations.css"; // Corrected the import path
 
 const HREmployees = () => {
   const [employees, setEmployees] = useState([]);
@@ -10,8 +11,8 @@ const HREmployees = () => {
     phone: "",
     position: "",
     salary: "",
-    department: "", // ✅ Added department
-    date_hired: "", // ✅ Added date_hired
+    department: "",
+    date_hired: "",
   });
 
   const [editingEmployee, setEditingEmployee] = useState(null);
@@ -36,7 +37,7 @@ const HREmployees = () => {
     setNewEmployee({ ...newEmployee, [e.target.name]: e.target.value });
   };
 
-  // Save Employee (Create or Update)
+  // Save Employee
   const saveEmployee = async () => {
     if (!newEmployee.first_name || !newEmployee.last_name || !newEmployee.email) {
       alert("Please fill out all required fields!");
@@ -50,7 +51,7 @@ const HREmployees = () => {
         await hrAPI.createEmployee(newEmployee);
       }
 
-      fetchEmployees(); // Refresh list
+      fetchEmployees();
       setNewEmployee({
         first_name: "",
         last_name: "",
@@ -87,8 +88,8 @@ const HREmployees = () => {
   };
 
   return (
-    <div className="container-fluid py-4">
-      <h1 className="mb-4">Employee Records Management</h1>
+    <div className="container-fluid py-4 fade-in-slide">
+      <h1 className="mb-4 slide-in-left">Employee Records Management</h1>
 
       {/* Search & Add Employee */}
       <div className="d-flex justify-content-between mb-3">
@@ -126,8 +127,8 @@ const HREmployees = () => {
                       .toLowerCase()
                       .includes(searchTerm.toLowerCase())
                   )
-                  .map((employee) => (
-                    <tr key={employee.id}>
+                  .map((employee, index) => (
+                    <tr key={employee.id} className={`slide-in-row delay-${index}`}>
                       <td>{employee.id}</td>
                       <td>{employee.first_name} {employee.last_name}</td>
                       <td>{employee.email}</td>
@@ -163,8 +164,10 @@ const HREmployees = () => {
       </div>
 
       {/* Employee Form */}
-      <h3 className="mt-4">{editingEmployee ? "Edit Employee" : "Add New Employee"}</h3>
-      <div className="card p-3">
+      <h3 className="mt-4 slide-in-right">
+        {editingEmployee ? "Edit Employee" : "Add New Employee"}
+      </h3>
+      <div className="card p-3 scale-in">
         <div className="row">
           <div className="col-md-4">
             <input
@@ -199,6 +202,10 @@ const HREmployees = () => {
               required
             />
           </div>
+        </div>
+
+        {/* New fields for Phone, Position, Department, Salary, Date Hired */}
+        <div className="row mt-3">
           <div className="col-md-4">
             <input
               type="text"
@@ -227,19 +234,11 @@ const HREmployees = () => {
               className="form-control mb-2"
               value={newEmployee.department}
               onChange={handleInputChange}
-              required
             />
           </div>
-          <div className="col-md-4">
-            <input
-              type="date"
-              name="date_hired"
-              className="form-control mb-2"
-              value={newEmployee.date_hired}
-              onChange={handleInputChange}
-              required
-            />
-          </div>
+        </div>
+
+        <div className="row mt-3">
           <div className="col-md-4">
             <input
               type="number"
@@ -250,7 +249,18 @@ const HREmployees = () => {
               onChange={handleInputChange}
             />
           </div>
+          <div className="col-md-4">
+            <input
+              type="date"
+              name="date_hired"
+              placeholder="Date Hired"
+              className="form-control mb-2"
+              value={newEmployee.date_hired}
+              onChange={handleInputChange}
+            />
+          </div>
         </div>
+
         <button className="btn btn-primary mt-3" onClick={saveEmployee}>
           {editingEmployee ? "Update Employee" : "Save Employee"}
         </button>

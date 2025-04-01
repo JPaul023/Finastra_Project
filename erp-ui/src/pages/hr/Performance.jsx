@@ -1,61 +1,148 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import hrAPI from "../../services/hrapi";
+import { Container, Table, Button, Spinner } from "react-bootstrap";
+import "./animations.css"; // Corrected the import path
 
 const Performance = () => {
-  return (
-    <div className="container mt-4">
-      <h2 className="mb-4">Performance Evaluation System</h2>
+    const [unevaluated, setUnevaluated] = useState([]);
+    const [evaluated, setEvaluated] = useState([]);
+    const [loading, setLoading] = useState(false);
 
-      {/* Employee Performance Reviews */}
-      <section className="mb-4">
-        <h4>Employee Performance Reviews</h4>
-        <p>Track periodic performance evaluations conducted by managers.</p>
-        <table className="table table-bordered">
-          <thead>
-            <tr>
-              <th>Employee ID</th>
-              <th>Name</th>
-              <th>Review Date</th>
-              <th>Score</th>
-              <th>Status</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>EMP001</td>
-              <td>John Doe</td>
-              <td>2025-03-10</td>
-              <td>4.5/5</td>
-              <td>Completed</td>
-            </tr>
-          </tbody>
-        </table>
-      </section>
+    useEffect(() => {
+        fetchEmployees();
+    }, []);
 
-      {/* Goals & Objectives Management */}
-      <section className="mb-4">
-        <h4>Goals & Objectives Management</h4>
-        <p>Set and track employee goals and objectives for performance growth.</p>
-      </section>
+    const fetchEmployees = async () => {
+        setLoading(true);
+        try {
+            const unevaluatedRes = await hrAPI.getUnevaluatedEmployees();
+            const evaluatedRes = await hrAPI.getEvaluatedEmployees();
+            setUnevaluated(unevaluatedRes.data);
+            setEvaluated(evaluatedRes.data);
+        } catch (error) {
+            console.error("Error fetching employees:", error);
+        }
+        setLoading(false);
+    };
 
-      {/* Feedback & Ratings System */}
-      <section className="mb-4">
-        <h4>Feedback & Ratings System</h4>
-        <p>Provide structured feedback, ratings, and comments on employee performance.</p>
-      </section>
+    const handleEvaluate = async (id) => {
+        const score = prompt("Enter Performance Score (1-100):");
+        if (score) {
+            try {
+                await hrAPI.evaluateEmployee(id, parseInt(score));
+                fetchEmployees();
+            } catch (error) {
+                console.error("Error evaluating employee:", error);
+            }
+        }
+    };
 
-      {/* Performance Reports & Analytics */}
-      <section className="mb-4">
-        <h4>Performance Reports & Analytics</h4>
-        <p>Generate detailed reports and analytics on employee performance over time.</p>
-      </section>
+    const handleEdit = async (id, currentScore) => {
+        const newScore = prompt("Enter New Performance Score:", currentScore);
+        if (newScore) {
+            try {
+                await hrAPI.editPerformance(id, parseInt(newScore));
+                fetchEmployees();
+            } catch (error) {
+                console.error("Error updating performance score:", error);
+            }
+        }
+    };
 
-      {/* Promotion & Salary Increment Recommendations */}
-      <section>
-        <h4>Promotion & Salary Increment Recommendations</h4>
-        <p>Track promotions, bonuses, and salary increments based on performance reviews.</p>
-      </section>
-    </div>
-  );
+    const handleDelete = async (id) => {
+        if (window.confirm("Are you sure you want to reset this employee's evaluation?")) {
+            try {
+                await hrAPI.resetEvaluation(id);
+                fetchEmployees();
+            } catch (error) {
+                console.error("Error resetting evaluation:", error);
+            }
+        }
+    };
+
+    return (
+        <Container className="mt-4">
+            <h2 className="text-center mb-4 fade-in">Performance Evaluation</h2>
+
+            {loading ? (
+                <div className="text-center spinner-container">
+                    <Spinner animation="border" role="status">
+                        <span className="visually-hidden">Loading...</span>
+                    </Spinner>
+                </div>
+            ) : (
+                <>
+                    <h4 className="mt-3 fade-in">Unevaluated Employees</h4>
+                    <Table striped bordered hover responsive className="fade-in-table">
+                        <thead className="table-dark">
+                            <tr>
+                                <th>Name</th>
+                                <th>Position</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {unevaluated.length > 0 ? (
+                                unevaluated.map((emp) => (
+                                    <tr key={emp.id} className="row-appear">
+                                        <td>{emp.first_name} {emp.last_name}</td>
+                                        <td>{emp.position}</td>
+                                        <td>
+                                            <Button variant="primary" size="sm" className="btn-animate"
+                                                onClick={() => handleEvaluate(emp.id)}>
+                                                Evaluate
+                                            </Button>
+                                        </td>
+                                    </tr>
+                                ))
+                            ) : (
+                                <tr>
+                                    <td colSpan="3" className="text-center">No unevaluated employees.</td>
+                                </tr>
+                            )}
+                        </tbody>
+                    </Table>
+
+                    <h4 className="mt-4 fade-in">Evaluated Employees</h4>
+                    <Table striped bordered hover responsive className="fade-in-table">
+                        <thead className="table-success">
+                            <tr>
+                                <th>Name</th>
+                                <th>Position</th>
+                                <th>Score</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {evaluated.length > 0 ? (
+                                evaluated.map((emp) => (
+                                    <tr key={emp.id} className="row-appear">
+                                        <td>{emp.first_name} {emp.last_name}</td>
+                                        <td>{emp.position}</td>
+                                        <td>{emp.performance_score}</td>
+                                        <td>
+                                            <Button variant="warning" size="sm" className="me-2 btn-animate"
+                                                onClick={() => handleEdit(emp.id, emp.performance_score)}>
+                                                Edit
+                                            </Button>
+                                            <Button variant="danger" size="sm" className="btn-animate"
+                                                onClick={() => handleDelete(emp.id)}>
+                                                Reset
+                                            </Button>
+                                        </td>
+                                    </tr>
+                                ))
+                            ) : (
+                                <tr>
+                                    <td colSpan="4" className="text-center">No evaluated employees yet.</td>
+                                </tr>
+                            )}
+                        </tbody>
+                    </Table>
+                </>
+            )}
+        </Container>
+    );
 };
 
 export default Performance;
