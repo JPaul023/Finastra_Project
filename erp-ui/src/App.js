@@ -26,6 +26,12 @@ import Recruitment from './pages/hr/Recruitment';
 import Performance from './pages/hr/Performance';
 import HRPayroll from "./pages/hr/HRPayroll"; 
 
+import FinanceDashboard from './pages/finance/Dashboard';
+import Income from './pages/finance/Income';
+import Expenses from './pages/finance/Expenses';
+import Reports from './pages/finance/Reports';
+
+
 
 function App() {
   return (
@@ -44,6 +50,10 @@ function App() {
               <Route path="/hr/recruitment" element={<Recruitment />} />
               <Route path="/hr/performance" element={<Performance />} />
               <Route path="/hr/hrpayroll" element={<HRPayroll />} />
+              <Route path="/finance/dashboard" element={<FinanceDashboard />} />
+              <Route path="/finance/income" element={<Income />} />
+              <Route path="/finance/expenses" element={<Expenses />} />
+              <Route path="/finance/reports" element={<Reports />} />
             </Routes>
           </div>
         </div>

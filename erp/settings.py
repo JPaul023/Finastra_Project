@@ -42,9 +42,11 @@ INSTALLED_APPS = [
     'rest_framework',
     'corsheaders',
     'hr_app',
+    'finance_app'
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',  
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -52,10 +54,9 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'corsheaders.middleware.CorsMiddleware',
 ]
 
-CORS_ORIGIN_ALLOW_ALL = True
+CORS_ALLOW_ALL_ORIGINS = True 
 
 ROOT_URLCONF = 'erp.urls'
 
@@ -84,19 +85,26 @@ WSGI_APPLICATION = 'erp.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
+import environ
+import os
+
+
+env = environ.Env()
+environ.Env.read_env(os.path.join(BASE_DIR, ".env"))
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'erp_db',  # Replace with your database name
-        'USER': 'root',      # Replace with your MySQL username
-        'PASSWORD': 'Watergreen!23',  # Replace with your MySQL password
-        'HOST': 'localhost',
-        'PORT': '3306',
+        'NAME': env("DB_NAME", default="erp_db"),
+        'USER': env("DB_USER", default="root"),
+        'PASSWORD': env("DB_PASSWORD", default="Watergreen!23"),
+        'HOST': env("DB_HOST", default="localhost"),
+        'PORT': int(env("DB_PORT", default=3306)),  
         'OPTIONS': {
             'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
         },
     }
 }
+
 
 
 

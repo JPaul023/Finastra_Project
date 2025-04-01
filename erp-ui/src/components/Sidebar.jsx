@@ -32,8 +32,10 @@ function Sidebar() {
             label: 'Finance & Accounting',
             bsColor: 'info',
             subItems: [
-                { path: '/finance/one', label: 'Lorem ipsum', icon: '' },
-                { path: '/finance/two', label: 'Lorem ipsum', icon: '' }
+                { path: '/finance/dashboard', label: 'Finance Dashboard', icon: 'fa-chart-pie' },
+                { path: '/finance/income', label: 'Income & Revenue', icon: 'fa-money-bill-wave' },
+                { path: '/finance/expenses', label: 'Expenses', icon: 'fa-credit-card' },
+                { path: '/finance/reports', label: 'Financial Reports', icon: 'fa-chart-line' }
             ]
         },
         {
