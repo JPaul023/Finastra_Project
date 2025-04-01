@@ -36,6 +36,11 @@ import Expenses from './pages/finance/Expenses';
 import Reports from './pages/finance/Reports';
 
 
+//Import CRM pages
+import CustomerSupport from "./pages/crm/CustomerSupport";
+import CustomerTable from "./pages/crm/CustomerTable";
+import EmailSmsAutomation from "./pages/crm/Email&SMSAutomation";
+
 
 function App() {
   return (
@@ -68,6 +73,10 @@ function App() {
               <Route path="/finance/income" element={<Income />} />
               <Route path="/finance/expenses" element={<Expenses />} />
               <Route path="/finance/reports" element={<Reports />} />
+
+              <Route path="/crm/CustomerSupport" element={<CustomerSupport />} />
+              <Route path="/crm/ClientDatabase&InteractionTracking" element={<CustomerTable />} />
+              <Route path="/crm/Email&SMS" element={<EmailSmsAutomation />} />
             </Routes>
           </div>
         </div>
