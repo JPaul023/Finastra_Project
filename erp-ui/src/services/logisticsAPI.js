@@ -11,6 +11,7 @@ const api = {
   deleteOrder: (id) => axios.delete(`${API_BASE_URL}/orders/${id}/`),
 
   shipOrder: (data) => axios.post(`${API_BASE_URL}/shipments/ship_order/`, data),
+  updateShipment: (id, data) => axios.patch(`${API_BASE_URL}/shipments/${id}/`, data),
   
   // Shipments
   getShipments: () => axios.get(`${API_BASE_URL}/shipments/`),
@@ -34,11 +35,20 @@ const api = {
   deleteVehicle: (id) => axios.delete(`${API_BASE_URL}/vehicles/${id}/`),
   
   // Deliveries
-  getDeliveries: () => axios.get(`${API_BASE_URL}/deliveries/`),
-  getDelivery: (id) => axios.get(`${API_BASE_URL}/deliveries/${id}/`),
-  createDelivery: (data) => axios.post(`${API_BASE_URL}/deliveries/`, data),
-  updateDelivery: (id, data) => axios.put(`${API_BASE_URL}/deliveries/${id}/`, data),
-  deleteDelivery: (id) => axios.delete(`${API_BASE_URL}/deliveries/${id}/`),
+  getDeliveries: () => axios.get(`${API_BASE_URL}/proof-of-delivery/`),
+  getDelivery: (id) => axios.get(`${API_BASE_URL}/proof-of-delivery/${id}/`),
+  createDelivery: (data) => axios.post(`${API_BASE_URL}/proof-of-delivery/`, data),
+  updateDelivery: (id, data) => axios.put(`${API_BASE_URL}/proof-of-delivery/${id}/`, data),
+  deleteDelivery: (id) => axios.delete(`${API_BASE_URL}/proof-of-delivery/${id}/`),
+
+  getDelivery: (id) => axios.get(`${API_BASE_URL}/proof-of-delivery/${id}/?expand=shipment.order,shipment.order.warehouse,shipment.order.vehicle,shipment.order.item`),
+
+
+  submitProofOfDelivery: (formData) => 
+    axios.post(`${API_BASE_URL}/proof-of-delivery/`, formData, {
+      headers: { "Content-Type": "multipart/form-data" },
+    }),  
+  
 };
 
 export default api;

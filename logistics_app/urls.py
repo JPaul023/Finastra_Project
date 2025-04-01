@@ -7,7 +7,7 @@ router.register(r'warehouses', WarehouseViewSet)
 router.register(r'vehicles', VehicleViewSet)
 router.register(r'orders', OrderViewSet)
 router.register(r'shipments', ShipmentViewSet)
-router.register(r'proofs', ProofOfDeliveryViewSet)
+router.register(r'proof-of-delivery', ProofOfDeliveryViewSet) 
 
 urlpatterns = [
     path('', include(router.urls)),

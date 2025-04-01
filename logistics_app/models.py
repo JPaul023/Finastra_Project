@@ -33,6 +33,7 @@ class Order(models.Model):
         ('pending', 'Pending'),
         ('shipped', 'Shipped'),
         ('delivered', 'Delivered'),
+        ("failed", "Failed"),
         ('canceled', 'Canceled'),
     ])
     order_number = models.CharField(max_length=20, unique=True, blank=True, default=None, null=True)
@@ -63,13 +64,19 @@ class Shipment(models.Model):
     vehicle = models.ForeignKey('Vehicle', related_name='shipments', on_delete=models.CASCADE, null=True, blank=True)
     tracking_number = models.CharField(max_length=100, unique=True, editable=False, default=None)
     shipped_date = models.DateTimeField(null=True, blank=True)
-    delivered_date = models.DateTimeField(null=True, blank=True)
+    STATUS_CHOICES = [
+        ("pending", "Pending"),
+        ("shipped", "Shipped"),
+        ("delivered", "Delivered"),
+        ("failed", "Failed"),
+        ('canceled', 'Canceled'),
+    ]
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default="shipped")
 
     def save(self, *args, **kwargs):
         if not self.tracking_number:
             self.tracking_number = str(uuid.uuid4().hex[:12]).upper()  # Generate a 12-character unique ID
 
-        # Set shipped_date if it's not already set
         if not self.shipped_date:
             self.shipped_date = now()
 
@@ -92,10 +99,10 @@ class ProofOfDelivery(models.Model):
         ('other', 'Other'),
     ]
 
-    shipment = models.OneToOneField(Shipment, related_name='proof', on_delete=models.CASCADE)
-    delivered_by = models.CharField(max_length=255)
+    shipment = models.OneToOneField(Shipment, related_name='proofs', on_delete=models.CASCADE)
+    delivered_by = models.CharField(max_length=255, blank=True, null=True)  # ✅ Made optional
     delivered_date = models.DateTimeField(auto_now_add=True)
-    signature = models.ImageField(upload_to='signatures/')
+    signature = models.ImageField(upload_to='signatures/', blank=True, null=True)  # ✅ Made optional
     delivery_status = models.CharField(max_length=10, choices=DELIVERY_STATUS_CHOICES, default='delivered')
     proof_photo = models.ImageField(upload_to='proof_photos/', blank=True, null=True)
     amount_paid = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)

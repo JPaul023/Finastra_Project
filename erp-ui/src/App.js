@@ -15,6 +15,7 @@ import Orders from './pages/Logistics/Orders';
 import Warehouses from './pages/Logistics/Warehouses';
 import Shipments from './pages/Logistics/Shipments';
 import Vehicles from './pages/Logistics/Vehicles';
+import Deliveries from './pages/Logistics/Deliveries';
 
 import Inventory from './pages/inventory/Inventory';
 import CategoryList from './pages/inventory/CategoryList';
@@ -43,6 +44,7 @@ function App() {
               <Route path="/logistics/warehouses" element={<Warehouses />} />
               <Route path="/logistics/shipments" element={<Shipments />} />
               <Route path="/logistics/vehicles" element={<Vehicles />} />
+              <Route path="/logistics/deliveries" element={<Deliveries />} />
 
               <Route path="/inventory" element={<Inventory />} />
               <Route path="/inventory/categories" element={<CategoryList />} />

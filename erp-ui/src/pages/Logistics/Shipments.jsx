@@ -35,11 +35,21 @@ const Shipments = () => {
     try {
       setLoading(true);
       const response = await api.getShipments();
-      setShipments(response.data);
+      console.log("API Response:", response); // Log the full response
+
+      // Filter shipments to only include those with status "shipped"
+      const shippedShipments = response.data.filter(
+        (shipment) => shipment.status === "shipped"
+      );
+
+      setShipments(shippedShipments);
       setError(null);
     } catch (err) {
+      console.error(
+        "Error fetching shipments:",
+        err.response ? err.response.data : err.message
+      );
       setError("Failed to load shipments. Please try again later.");
-      console.error("Error fetching shipments:", err);
     } finally {
       setLoading(false);
     }
@@ -71,27 +81,53 @@ const Shipments = () => {
     }
   }, [selectedShipment]);
 
-  const handleProofSubmit = async () => {
-    if (isFailed && !failedReason) {
+  const handleProofSubmit = async (failed = false) => {
+    if (!proofPhoto) {
+      alert("Proof photo is required.");
+      return;
+    }
+
+    if (failed && !failedReason) {
       alert("Please provide a reason for failed delivery.");
       return;
     }
 
     const formData = new FormData();
     formData.append("shipment", selectedShipment.id);
-    formData.append("amount_paid", amountPaid);
-    formData.append("payment_mode", paymentMode);
-    if (proofPhoto) formData.append("proof_photo", proofPhoto);
-    if (isFailed) formData.append("failed_reason", failedReason);
+    if (!failed) {
+      formData.append("amount_paid", amountPaid);
+      formData.append("payment_mode", paymentMode.toLowerCase());
+    }
+    formData.append("proof_photo", proofPhoto);
+
+    if (failed) {
+      formData.append("failed_reason", failedReason);
+      formData.append("delivery_status", "failed"); // Mark explicitly as failed
+    } else {
+      formData.append("delivery_status", "delivered"); // Mark explicitly as delivered
+    }
+
+    console.log("FormData being sent:");
+    for (let pair of formData.entries()) {
+      console.log(pair[0], pair[1]);
+    }
 
     try {
+      // Submit proof of delivery
       await api.submitProofOfDelivery(formData);
-      alert("Proof of delivery submitted successfully.");
+
+      // Update shipment status
+      await api.updateShipment(selectedShipment.id, {
+        status: failed ? "failed" : "delivered",
+      });
+
+      alert(
+        `Shipment marked as ${failed ? "failed" : "delivered"} successfully.`
+      );
       setSelectedShipment(null);
       fetchShipments();
     } catch (error) {
       console.error("Error submitting proof of delivery:", error);
-      alert("Failed to submit proof of delivery.");
     }
   };
 
@@ -273,6 +309,7 @@ const Shipments = () => {
                   <Form.Control
                     type="file"
                     onChange={(e) => setProofPhoto(e.target.files[0])}
+                    required
                   />
                 </Form.Group>
 
@@ -282,6 +319,7 @@ const Shipments = () => {
                     type="number"
                     value={amountPaid}
                     onChange={(e) => setAmountPaid(e.target.value)}
+                    required
                   />
                 </Form.Group>
 
@@ -310,20 +348,46 @@ const Shipments = () => {
                 )}
 
                 <div className="text-end">
-                  
                   <Button
                     variant="danger"
-                    className="mt-3 "
-                    onClick={() => setIsFailed(true)}
+                    className="mt-3"
+                    onClick={() => {
+                      setIsFailed(true); // First, update state to show reason input
+
+                      setTimeout(() => {
+                        if (!proofPhoto) {
+                          alert("Proof photo is required.");
+                          return;
+                        }
+                        if (!failedReason) {
+                          alert("Reason for failed delivery is required.");
+                          return;
+                        }
+                        handleProofSubmit(true); // Call function with failed=true
+                      }, 100); // Small delay to allow UI update
+                    }}
                   >
                     Failed
                   </Button>
+
                   <Button
                     variant="success"
                     className="mt-3 ms-4"
                     onClick={() => {
-                      setIsFailed(false);
-                      handleProofSubmit();
+                      if (!proofPhoto) {
+                        alert("Proof photo is required.");
+                        return;
+                      }
+                      if (!amountPaid) {
+                        alert("Amount paid is required.");
+                        return;
+                      }
+                      if (!paymentMode) {
+                        alert("Mode of payment is required.");
+                        return;
+                      }
+                      setIsFailed(false); // Mark as delivered
+                      handleProofSubmit(false); // Call function with failed=false
                     }}
                   >
                     Delivered
