@@ -67,9 +67,10 @@ function Sidebar() {
             label: 'Customer Relationship',
             bsColor: 'info',
             subItems: [
-                { path: '/crm/one', label: 'Lorem ipsum', icon: '' },
-                { path: '/crm/two', label: 'Lorem ipsum', icon: '' },
-                { path: '/crm/three', label: 'Lorem ipsum', icon: '' }
+                { path: '/crm/ClientDatabase&InteractionTracking', label: 'Client Database & Interaction Tracking', icon: 'fa-users' },
+                { path: '/crm/SalesPipeline&LeadManagement', label: 'Sales Pipeline & Lead Management', icon: 'fa-chart-line' },
+                { path: '/crm/Email&SMS', label: 'Email & SMS Automation', icon: 'fa-envelope' },
+                { path: '/crm/CustomerSupport', label: 'Customer Ticketing Support', icon: 'fa-headset' }
             ]
         }
     ];

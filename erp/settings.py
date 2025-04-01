@@ -43,7 +43,8 @@ INSTALLED_APPS = [
     'corsheaders',
     'hr_app',
     'inventory_app',
-    'finance_app'
+    'finance_app',
+    'crm_app'
 ]
 
 MIDDLEWARE = [
@@ -97,9 +98,9 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'erp_db',  # Replace with your database name
         'USER': 'root',      # Replace with your MySQL username
-        'PASSWORD': '',  # Replace with your MySQL password
+        'PASSWORD': 'Watergreen!23',  # Replace with your MySQL password
         'HOST': 'localhost',
-        'PORT': '3306',
+        'PORT': '3307',
         'OPTIONS': {
             'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
         },
