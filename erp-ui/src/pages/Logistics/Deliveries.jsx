@@ -58,6 +58,7 @@ function Deliveries() {
 
   return (
     <div className="container-fluid py-4">
+      <h3 className="text-left mb-4">Deliveries</h3>
       {loading ? (
         <div>Loading...</div>
       ) : (

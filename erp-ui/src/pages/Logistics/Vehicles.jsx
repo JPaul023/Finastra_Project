@@ -100,9 +100,16 @@ function Vehicles() {
 
   return (
     <div className="container-fluid py-4">
-      <button className="btn btn-primary" onClick={openCreateModal}>
-        <i className="bi bi-plus-circle me-1"></i> Add Vehicle
-      </button>
+      <h3 className="text-left mb-4">Vehicles</h3>
+      <div className="d-flex justify-content-end mb-2">
+        <button
+          className="btn px-4"
+          style={{ backgroundColor: "#4e73df", color: "white", height: "3rem" }}
+          onClick={openCreateModal}
+        >
+          <i className="bi bi-plus-circle me-1"></i> Add Vehicle
+        </button>
+      </div>
       {loading ? <div>Loading...</div> : <Table data={vehicles} columns={columns} onEdit={openEditModal} onDelete={handleDeleteVehicle} />}
       <Modal showModal={showModal} title="Manage Vehicles" fields={fields} data={currentVehicle} onClose={() => setShowModal(false)} onChange={handleInputChange} onSave={handleSaveVehicles} />
     </div>

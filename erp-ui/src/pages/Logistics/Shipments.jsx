@@ -135,14 +135,22 @@ const Shipments = () => {
     <>
       <div className="p-3">
         <h2 className="mb-4">Shipments</h2>
-        <Button
-          variant="light"
-          size="sm"
-          onClick={fetchShipments}
-          disabled={loading}
-        >
-          {loading ? <Spinner size="sm" animation="border" /> : "Refresh"}
-        </Button>
+        <div className="d-flex justify-content-end">
+          <Button
+            variant="light"
+            size="sm"
+            className="px-4 mb-2"
+            style={{
+              backgroundColor: "#4e73df",
+              color: "white",
+              height: "3rem",
+            }}
+            onClick={fetchShipments}
+            disabled={loading}
+          >
+            {loading ? <Spinner size="sm" animation="border" /> : "Refresh"}
+          </Button>
+        </div>
 
         {error && <Alert variant="danger">{error}</Alert>}
 

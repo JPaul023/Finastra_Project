@@ -73,7 +73,10 @@ function Warehouses() {
   };
 
   const handleInputChange = (e) => {
-    setCurrentWarehouse({ ...currentWarehouse, [e.target.name]: e.target.value });
+    setCurrentWarehouse({
+      ...currentWarehouse,
+      [e.target.name]: e.target.value,
+    });
   };
 
   const openCreateModal = () => {
@@ -94,16 +97,41 @@ function Warehouses() {
 
   const fields = [
     { name: "name", label: "Name", type: "text" },
-    { name: "address", label: "Location", type: "textarea" }
+    { name: "address", label: "Location", type: "textarea" },
   ];
 
   return (
     <div className="container-fluid py-4">
-      {/* <button className="btn btn-primary" onClick={openCreateModal}>
-        <i className="bi bi-plus-circle me-1"></i> New Warehouse
-      </button> */}
-      {loading ? <div>Loading...</div> : <Table data={warehouses} columns={columns} onEdit={openEditModal} onDelete={handleDeleteWarehouse} />}
-      <Modal showModal={showModal} title="Manage Warehouses" fields={fields} data={currentWarehouse} onClose={() => setShowModal(false)} onChange={handleInputChange} onSave={handleSaveWarehouses} />
+      <h3 className="text-left mb-4">Warehouses</h3>
+      <div className="d-flex justify-content-end mb-2">
+        <button
+          className="btn px-4"
+          style={{ backgroundColor: "#4e73df", color: "white", height: "3rem" }}
+          onClick={openCreateModal}
+        >
+          <i className="bi bi-plus-circle me-1"></i> Add Warehouse
+        </button>
+      </div>
+
+      {loading ? (
+        <div>Loading...</div>
+      ) : (
+        <Table
+          data={warehouses}
+          columns={columns}
+          onEdit={openEditModal}
+          onDelete={handleDeleteWarehouse}
+        />
+      )}
+      <Modal
+        showModal={showModal}
+        title="Manage Warehouses"
+        fields={fields}
+        data={currentWarehouse}
+        onClose={() => setShowModal(false)}
+        onChange={handleInputChange}
+        onSave={handleSaveWarehouses}
+      />
     </div>
   );
 }
