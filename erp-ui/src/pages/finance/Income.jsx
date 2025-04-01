@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Container, Row, Col, Card, Alert, Spinner, Modal, Button, Form, Badge, Tabs, Tab } from 'react-bootstrap';
 import IncomeForm from '../../components/finance/IncomeForm';
 import TransactionTable from '../../components/finance/TransactionTable';

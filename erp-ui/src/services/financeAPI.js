@@ -3,7 +3,7 @@
 import axios from 'axios';
 
 // Set the base URL for all API calls - keeping port 8002 as you requested
-const API_BASE_URL = 'http://localhost:8002/api/finance';
+const API_BASE_URL = 'http://127.0.0.1:8000/api/finance';
 
 // Enhanced event system to notify components when data changes
 export const FinanceEvents = {
