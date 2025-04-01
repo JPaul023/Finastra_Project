@@ -9,5 +9,5 @@ urlpatterns = [
     path('', include("users.urls")), # Include the users app's URLs
     path('logistics/api/', include('logistics_app.urls')),
     path('hr/', include('hr_app.urls')),
-    path('inventory/api/', include('inventory_app.urls')),
+    path('inventory/api/', include('inventory_app.urls')),    path('api/finance/', include('finance_app.urls')),
 ]
